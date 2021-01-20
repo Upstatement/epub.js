@@ -1,6 +1,6 @@
-import { extend } from "./utils/core";
-import { EVENTS } from "./utils/constants";
-import EventEmitter from "event-emitter";
+import { extend } from './utils/core';
+import { EVENTS } from './utils/constants';
+import EventEmitter from 'event-emitter';
 
 /**
  * Figures out the CSS values to apply for a layout
@@ -12,247 +12,247 @@ import EventEmitter from "event-emitter";
  * @param {boolean} [settings.evenSpreads=false]
  */
 class Layout {
-	constructor(settings) {
-		this.settings = settings;
-		this.name = settings.layout || "reflowable";
-		this._spread = (settings.spread === "none") ? false : true;
-		this._minSpreadWidth = settings.minSpreadWidth || 800;
-		this._evenSpreads = settings.evenSpreads || false;
+  constructor(settings) {
+    this.settings = settings;
+    this.name = settings.layout || 'reflowable';
+    this._spread = (settings.spread === 'none') ? false : true;
+    this._minSpreadWidth = settings.minSpreadWidth || 800;
+    this._evenSpreads = settings.evenSpreads || false;
 
-		if (settings.flow === "scrolled" ||
-				settings.flow === "scrolled-continuous" ||
-				settings.flow === "scrolled-doc") {
-			this._flow = "scrolled";
-		} else {
-			this._flow = "paginated";
-		}
+    if (settings.flow === 'scrolled' ||
+				settings.flow === 'scrolled-continuous' ||
+				settings.flow === 'scrolled-doc') {
+      this._flow = 'scrolled';
+    } else {
+      this._flow = 'paginated';
+    }
 
 
-		this.width = 0;
-		this.height = 0;
-		this.spreadWidth = 0;
-		this.delta = 0;
+    this.width = 0;
+    this.height = 0;
+    this.spreadWidth = 0;
+    this.delta = 0;
 
-		this.columnWidth = 0;
-		this.gap = 0;
-		this.divisor = 1;
+    this.columnWidth = 0;
+    this.gap = 0;
+    this.divisor = 1;
 
-		this.props = {
-			name: this.name,
-			spread: this._spread,
-			flow: this._flow,
-			width: 0,
-			height: 0,
-			spreadWidth: 0,
-			delta: 0,
-			columnWidth: 0,
-			gap: 0,
-			divisor: 1
-		};
+    this.props = {
+      name: this.name,
+      spread: this._spread,
+      flow: this._flow,
+      width: 0,
+      height: 0,
+      spreadWidth: 0,
+      delta: 0,
+      columnWidth: 0,
+      gap: 0,
+      divisor: 1,
+    };
 
-	}
+  }
 
-	/**
+  /**
 	 * Switch the flow between paginated and scrolled
 	 * @param  {string} flow paginated | scrolled
 	 * @return {string} simplified flow
 	 */
-	flow(flow) {
-		if (typeof(flow) != "undefined") {
-			if (flow === "scrolled" ||
-					flow === "scrolled-continuous" ||
-					flow === "scrolled-doc") {
-				this._flow = "scrolled";
-			} else {
-				this._flow = "paginated";
-			}
-			// this.props.flow = this._flow;
-			this.update({flow: this._flow});
-		}
-		return this._flow;
-	}
+  flow(flow) {
+    if (typeof(flow) !== 'undefined') {
+      if (flow === 'scrolled' ||
+					flow === 'scrolled-continuous' ||
+					flow === 'scrolled-doc') {
+        this._flow = 'scrolled';
+      } else {
+        this._flow = 'paginated';
+      }
+      // this.props.flow = this._flow;
+      this.update({ flow: this._flow });
+    }
+    return this._flow;
+  }
 
-	/**
+  /**
 	 * Switch between using spreads or not, and set the
 	 * width at which they switch to single.
 	 * @param  {string} spread "none" | "always" | "auto"
 	 * @param  {number} min integer in pixels
 	 * @return {boolean} spread true | false
 	 */
-	spread(spread, min) {
+  spread(spread, min) {
 
-		if (spread) {
-			this._spread = (spread === "none") ? false : true;
-			// this.props.spread = this._spread;
-			this.update({spread: this._spread});
-		}
+    if (spread) {
+      this._spread = (spread === 'none') ? false : true;
+      // this.props.spread = this._spread;
+      this.update({ spread: this._spread });
+    }
 
-		if (min >= 0) {
-			this._minSpreadWidth = min;
-		}
+    if (min >= 0) {
+      this._minSpreadWidth = min;
+    }
 
-		return this._spread;
-	}
+    return this._spread;
+  }
 
-	/**
+  /**
 	 * Calculate the dimensions of the pagination
 	 * @param  {number} _width  width of the rendering
 	 * @param  {number} _height height of the rendering
 	 * @param  {number} _gap    width of the gap between columns
 	 */
-	calculate(_width, _height, _gap){
+  calculate(_width, _height, _gap){
 
-		var divisor = 1;
-		var gap = _gap || 0;
+    let divisor = 1;
+    let gap = _gap || 0;
 
-		//-- Check the width and create even width columns
-		// var fullWidth = Math.floor(_width);
-		var width = _width;
-		var height = _height;
+    //-- Check the width and create even width columns
+    // var fullWidth = Math.floor(_width);
+    let width = _width;
+    const height = _height;
 
-		var section = Math.floor(width / 12);
+    const section = Math.floor(width / 12);
 
-		var columnWidth;
-		var spreadWidth;
-		var pageWidth;
-		var delta;
+    let columnWidth;
+    let spreadWidth;
+    let pageWidth;
+    let delta;
 
-		if (this._spread && width >= this._minSpreadWidth) {
-			divisor = 2;
-		} else {
-			divisor = 1;
-		}
+    if (this._spread && width >= this._minSpreadWidth) {
+      divisor = 2;
+    } else {
+      divisor = 1;
+    }
 
-		if (this.name === "reflowable" && this._flow === "paginated" && !(_gap >= 0)) {
-			gap = ((section % 2 === 0) ? section : section - 1);
-		}
+    if (this.name === 'reflowable' && this._flow === 'paginated' && !(_gap >= 0)) {
+      gap = ((section % 2 === 0) ? section : section - 1);
+    }
 
-		if (this.name === "pre-paginated" ) {
-			gap = 0;
-		}
+    if (this.name === 'pre-paginated' ) {
+      gap = 0;
+    }
 
-		//-- Double Page
-		if(divisor > 1) {
-			// width = width - gap;
-			// columnWidth = (width - gap) / divisor;
-			// gap = gap / divisor;
-			columnWidth = (width / divisor) - gap;
-			pageWidth = columnWidth + gap;
-		} else {
-			columnWidth = width;
-			pageWidth = width;
-		}
+    //-- Double Page
+    if (divisor > 1) {
+      // width = width - gap;
+      // columnWidth = (width - gap) / divisor;
+      // gap = gap / divisor;
+      columnWidth = (width / divisor) - gap;
+      pageWidth = columnWidth + gap;
+    } else {
+      columnWidth = width;
+      pageWidth = width;
+    }
 
-		if (this.name === "pre-paginated" && divisor > 1) {
-			width = columnWidth;
-		}
+    if (this.name === 'pre-paginated' && divisor > 1) {
+      width = columnWidth;
+    }
 
-		spreadWidth = (columnWidth * divisor) + gap;
+    spreadWidth = (columnWidth * divisor) + gap;
 
-		delta = width;
+    delta = width;
 
-		this.width = width;
-		this.height = height;
-		this.spreadWidth = spreadWidth;
-		this.pageWidth = pageWidth;
-		this.delta = delta;
+    this.width = width;
+    this.height = height;
+    this.spreadWidth = spreadWidth;
+    this.pageWidth = pageWidth;
+    this.delta = delta;
 
-		this.columnWidth = columnWidth;
-		this.gap = gap;
-		this.divisor = divisor;
+    this.columnWidth = columnWidth;
+    this.gap = gap;
+    this.divisor = divisor;
 
-		// this.props.width = width;
-		// this.props.height = _height;
-		// this.props.spreadWidth = spreadWidth;
-		// this.props.pageWidth = pageWidth;
-		// this.props.delta = delta;
-		//
-		// this.props.columnWidth = colWidth;
-		// this.props.gap = gap;
-		// this.props.divisor = divisor;
+    // this.props.width = width;
+    // this.props.height = _height;
+    // this.props.spreadWidth = spreadWidth;
+    // this.props.pageWidth = pageWidth;
+    // this.props.delta = delta;
+    //
+    // this.props.columnWidth = colWidth;
+    // this.props.gap = gap;
+    // this.props.divisor = divisor;
 
-		this.update({
-			width,
-			height,
-			spreadWidth,
-			pageWidth,
-			delta,
-			columnWidth,
-			gap,
-			divisor
-		});
+    this.update({
+      width,
+      height,
+      spreadWidth,
+      pageWidth,
+      delta,
+      columnWidth,
+      gap,
+      divisor,
+    });
 
-	}
+  }
 
-	/**
+  /**
 	 * Apply Css to a Document
 	 * @param  {Contents} contents
 	 * @return {Promise}
 	 */
-	format(contents, section, axis){
-		var formating;
+  format(contents, section, axis){
+    let formating;
 
-		if (this.name === "pre-paginated") {
-			formating = contents.fit(this.columnWidth, this.height, section);
-		} else if (this._flow === "paginated") {
-			formating = contents.columns(this.width, this.height, this.columnWidth, this.gap, this.settings.direction);
-		} else if (axis && axis === "horizontal") {
-			formating = contents.size(null, this.height);
-		} else {
-			formating = contents.size(this.width, null);				
-		}
+    if (this.name === 'pre-paginated') {
+      formating = contents.fit(this.columnWidth, this.height, section);
+    } else if (this._flow === 'paginated') {
+      formating = contents.columns(this.width, this.height, this.columnWidth, this.gap, this.settings.direction);
+    } else if (axis && axis === 'horizontal') {
+      formating = contents.size(null, this.height);
+    } else {
+      formating = contents.size(this.width, null);				
+    }
 
-		return formating; // might be a promise in some View Managers
-	}
+    return formating; // might be a promise in some View Managers
+  }
 
-	/**
+  /**
 	 * Count number of pages
 	 * @param  {number} totalLength
 	 * @param  {number} pageLength
 	 * @return {{spreads: Number, pages: Number}}
 	 */
-	count(totalLength, pageLength) {
+  count(totalLength, pageLength) {
 
-		let spreads, pages;
+    let spreads; let pages;
 
-		if (this.name === "pre-paginated") {
-			spreads = 1;
-			pages = 1;
-		} else if (this._flow === "paginated") {
-			pageLength = pageLength || this.delta;
-			spreads = Math.ceil( totalLength / pageLength);
-			pages = spreads * this.divisor;
-		} else { // scrolled
-			pageLength = pageLength || this.height;
-			spreads = Math.ceil( totalLength / pageLength);
-			pages = spreads;
-		}
+    if (this.name === 'pre-paginated') {
+      spreads = 1;
+      pages = 1;
+    } else if (this._flow === 'paginated') {
+      pageLength = pageLength || this.delta;
+      spreads = Math.ceil( totalLength / pageLength);
+      pages = spreads * this.divisor;
+    } else { // scrolled
+      pageLength = pageLength || this.height;
+      spreads = Math.ceil( totalLength / pageLength);
+      pages = spreads;
+    }
 
-		return {
-			spreads,
-			pages
-		};
+    return {
+      spreads,
+      pages,
+    };
 
-	}
+  }
 
-	/**
+  /**
 	 * Update props that have changed
 	 * @private
 	 * @param  {object} props
 	 */
-	update(props) {
-		// Remove props that haven't changed
-		Object.keys(props).forEach((propName) => {
-			if (this.props[propName] === props[propName]) {
-				delete props[propName];
-			}
-		});
+  update(props) {
+    // Remove props that haven't changed
+    Object.keys(props).forEach(propName => {
+      if (this.props[propName] === props[propName]) {
+        delete props[propName];
+      }
+    });
 
-		if(Object.keys(props).length > 0) {
-			let newProps = extend(this.props, props);
-			this.emit(EVENTS.LAYOUT.UPDATED, newProps, props);
-		}
-	}
+    if (Object.keys(props).length > 0) {
+      const newProps = extend(this.props, props);
+      this.emit(EVENTS.LAYOUT.UPDATED, newProps, props);
+    }
+  }
 }
 
 EventEmitter(Layout.prototype);

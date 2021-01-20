@@ -24,6 +24,14 @@
     "watch": "babel --watch -d lib/ src/",
     "prepare": "npm run compile && npm run build && npm run minify && npm run legacy && npm run productionLegacy"
   },
+  "lint-staged": {
+    "*.{js,css,json,md}": [
+      "prettier --write"
+    ],
+    "*.js": [
+      "eslint --fix"
+    ]
+  },
   "author": "fchasen@gmail.com",
   "license": "BSD-2-Clause",
   "devDependencies": {
@@ -33,9 +41,13 @@
     "@babel/plugin-proposal-export-namespace-from": "^7.10.1",
     "@babel/preset-env": "^7.10.2",
     "@babel/runtime": "^7.10.2",
+    "@upstatement/eslint-config": "^0.4.3",
+    "@upstatement/prettier-config": "^0.3.0",
+    "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "documentation": "^13.0.1",
     "eslint": "^7.1.0",
+    "eslint-config-prettier": "^7.2.0",
     "jsdoc": "^3.6.4",
     "karma": "^5.0.9",
     "karma-chrome-launcher": "^3.1.0",
@@ -44,6 +56,7 @@
     "karma-phantomjs-launcher": "^1.0.4",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "next",
+    "lint-staged": "^10.5.3",
     "mocha": "^7.2.0",
     "mocha-loader": "^5.0.0",
     "raw-loader": "^4.0.1",
