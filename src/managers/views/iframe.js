@@ -326,14 +326,14 @@ class IframeView {
     let size;
 
     if (isNumber(width)){
-      this.element.style.width = `${width  }px`;
-      this.iframe.style.width = `${width  }px`;
+      this.element.style.width = `${width}px`;
+      this.iframe.style.width = `${width}px`;
       this._width = width;
     }
 
     if (isNumber(height)){
-      this.element.style.height = `${height  }px`;
-      this.iframe.style.height = `${height  }px`;
+      this.element.style.height = `${height}px`;
+      this.iframe.style.height = `${height}px`;
       this._height = height;
     }
 
@@ -347,7 +347,7 @@ class IframeView {
       heightDelta: heightDelta,
     };
 
-    this.pane && this.pane.render();
+    // this.pane && this.pane.render();
 
     requestAnimationFrame(() => {
       let mark;

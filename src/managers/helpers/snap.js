@@ -1,5 +1,5 @@
-import { extend, defer, requestAnimationFrame, prefixed } from '../../utils/core';
-import { EVENTS, DOM_EVENTS } from '../../utils/constants';
+import { extend, defer } from '../../utils/core';
+import { EVENTS } from '../../utils/constants';
 import EventEmitter from 'event-emitter';
 
 // easing equations from https://github.com/danro/easing-js/blob/master/easing.js
@@ -19,17 +19,17 @@ const EASING_EQUATIONS = {
   },
   easeInCubic: function(pos) {
     return Math.pow(pos, 3);
-  	},
+	},
 };
 
 class Snap {
   constructor(manager, options) {
 
     this.settings = extend({
-      duration: 200,
+      duration: 350,
       minVelocity: 0.2,
       minDistance: 10,
-      easing: EASING_EQUATIONS['easeInCubic'],
+			easing: EASING_EQUATIONS['easeOutSine'],
     }, options || {});
 
     this.supportsTouch = this.supportsTouch();
@@ -169,6 +169,9 @@ class Snap {
   }
 
   onTouchStart(e) {
+		if (this.touchCanceler) {
+			return;
+		}
     const { screenX, screenY } = e.touches[0];
 
     if (this.fullsize) {
@@ -259,9 +262,9 @@ class Snap {
     const snapWidth = this.layout.pageWidth * this.layout.divisor;
     let snapTo = Math.round(left / snapWidth) * snapWidth;
 
-    if (howMany) {
-      snapTo += (howMany * snapWidth);
-    }
+    // if (howMany) {
+    //   snapTo += (howMany * snapWidth);
+    // }
 
     return this.smoothScrollTo(snapTo);
   }
